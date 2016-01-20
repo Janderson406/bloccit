@@ -14,6 +14,14 @@ group :development do
   gem 'sqlite3'
 end
 
+
+group :development, :test do
+   gem 'rspec-rails', '~> 3.0'
+ end
+#added rspec-rails to the :development and :test grps b/c we want its tasks and generators to be available in both environments.
+#specified a version (~> 3.0) to maintain predictable behavior despite new RSpec releases.
+#
+
 # Use SCSS for stylesheets
 gem 'sass-rails', '~> 5.0'
 # Use Uglifier as compressor for JavaScript assets

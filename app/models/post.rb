@@ -1,4 +1,5 @@
 class Post < ActiveRecord::Base #handles interaction with database/allows us to persist data through our class
+  belongs_to :topic
   has_many :comments, dependent: :destroy
 end
 #Comments are dependent on a post's existence because of the has_many :comments declaration in Post.

@@ -4,6 +4,7 @@ Rails.application.routes.draw do
   #get 'posts/new'
   #get 'posts/edit'
 #==> REFACTORED TO:
+  resources :topics
   resources :posts
     #instructs Rails to create post routes for creating, updating,
     #viewing, and deleting instances of Post

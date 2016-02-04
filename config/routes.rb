@@ -11,7 +11,8 @@ resources :topics do
   #^^ we pass resources :posts to the resources :topics block. This nests the post routes under the topic routes.
   #posts index view is no longer needed. All posts will be displayed with respect to a topic now, on the topics show view
 
-
+resources :users, only: [:new, :create]
+#'only' hash key will prevent Rails from creating unnecessary routes.
 
   #get 'welcome/index'
   #get 'welcome/about'

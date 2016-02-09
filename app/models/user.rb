@@ -1,6 +1,18 @@
 class User < ActiveRecord::Base
 
    before_save { self.email = email.downcase }
+   before_save :fixed_name
+
+   def fixed_name
+     if name != nil
+       caps_words = []
+       self.name.split.each do |n|
+         caps_words << n.capitalize
+       end
+       self.name = caps_words.join(" ")
+     end
+   end
+
    #inline callback: trigger logic before/after an alteration of the object state
    EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
    #The character pattern that we set EMAIL_REGEX to defines what constitutes a valid email address.

@@ -26,6 +26,13 @@ RSpec.describe User, type: :model do
     it "should respond to email" do
       expect(user).to respond_to(:email)
     end
+
+    it "should capitalize the name of the user" do
+      user.name = "jon anderson"
+      user.save
+      expect(user.name).to eq "Jon Anderson"
+    end
+
   end
 
 #test for values that we know should be invalid. this a *true negative*, as we are testing for a value that shouldn't exist.

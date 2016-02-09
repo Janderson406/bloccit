@@ -14,14 +14,16 @@ resources :topics do
 resources :users, only: [:new, :create]
 #'only' hash key will prevent Rails from creating unnecessary routes.
 
+  post 'confirm' => 'users#confirm'
+  #route for confirmation page
+
+
   #get 'welcome/index'
   #get 'welcome/about'
 #==> REFACTORED TO:
   get 'about' => 'welcome#about'
   #1. remove get "welcome/index" b/c we've declared index view as the root view
   #2. modify about route; allows users to visit /about, rather than /welcome/about
-
-
   root 'welcome#index'
   #root method allows us to declare the default page the app loads when we navigate to the home page URL.
   #root is a method that takes a hash as an argument

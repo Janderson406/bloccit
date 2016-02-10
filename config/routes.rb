@@ -14,6 +14,8 @@ resources :topics do
 resources :users, only: [:new, :create]
 #'only' hash key will prevent Rails from creating unnecessary routes.
 
+resources :sessions, only: [:new, :create, :destroy]
+
   #get 'welcome/index'
   #get 'welcome/about'
 #==> REFACTORED TO:

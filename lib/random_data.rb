@@ -9,7 +9,7 @@ module RandomData
      sentences.join(" ")
    end
 
- # #7
+
    def self.random_sentence
      strings = []
      rand(3..8).times do
@@ -22,7 +22,7 @@ module RandomData
      #converted to uppercase and the remainder of the sentence converted to lowercase
    end
 
- # #8
+
    def self.random_word
      letters = ('a'..'z').to_a #set letters to an array
      letters.shuffle!
@@ -31,4 +31,16 @@ module RandomData
      letters[0,rand(3..8)].join #join the zeroth through nth item in letters
                 #The nth item is the result of rand(3..8)
    end
+
+   def self.random_name
+     first_name = random_word.capitalize
+     last_name = random_word.capitalize
+     "#{first_name} #{last_name}"
+   end
+
+
+   def self.random_email
+     "#{random_word}@#{random_word}.#{random_word}"
+   end
+
  end

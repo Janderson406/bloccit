@@ -1,4 +1,8 @@
 class PostsController < ApplicationController
+
+  before_action :require_sign_in, except: :show
+  #before_action filter to redirect guest users from actions they won't be able to access (except for show)
+
   #def index
   #  @posts = Post.all  << no longer an index route for posts. All posts displayed with respect to a topic now, on the topics show view.
   #end
@@ -23,12 +27,16 @@ class PostsController < ApplicationController
     #When the user clicks Save, the create method is called. create either updates the database
     #with the save method, or returns an error. Unlike new, create does not have a corresponding view.
     #create works behind the scenes to collect the data submitted by the user and update the database. create is a POST action.
-     @post = Post.new
-     @post.title = params[:post][:title]
-     @post.body = params[:post][:body]
-      #call Post.new to create a new instance of Post.
-     @topic = Topic.find(params[:topic_id])
-     @post.topic = @topic #assign a topic to a post.
+      #REFACTORED TO =>
+        #@post = Post.new
+        #@post.title = params[:post][:title]
+        #@post.body = params[:post][:body]
+        @topic = Topic.find(params[:topic_id])
+        #@post.topic = @topic #assign a topic to a post.
+        @post = @topic.posts.build(post_params) #see bottom of file
+        @post.user = current_user #assign @post.user in the same way we assigned @post.topic, to properly scope the new post.
+
+
 
      if @post.save
        flash[:notice] = "Post was saved."
@@ -52,8 +60,11 @@ class PostsController < ApplicationController
 
   def update
      @post = Post.find(params[:id])
-     @post.title = params[:post][:title]
-     @post.body = params[:post][:body]
+     #@post.title = params[:post][:title]
+     #@post.body = params[:post][:body]
+     #REFACTORED =>
+     @post.assign_attributes(post_params)
+
 
      if @post.save
        flash[:notice] = "Post was updated."
@@ -77,6 +88,12 @@ class PostsController < ApplicationController
      #call destroy on @post.
      #If that call is successful, we set a flash message and redirect the user to the posts index view.
      #If destroy fails then we redirect the user to the show view using render :show
+   end
+
+   private
+   #add private methods to the bottom of the file. Any method defined below private, will be private.
+   def post_params
+     params.require(:post).permit(:title, :body)
    end
 
 end

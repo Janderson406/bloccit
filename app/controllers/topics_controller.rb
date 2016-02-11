@@ -15,10 +15,12 @@ class TopicsController < ApplicationController
 
 
   def create
-     @topic = Topic.new
-     @topic.name = params[:topic][:name]
-     @topic.description = params[:topic][:description]
-     @topic.public = params[:topic][:public]
+     #@topic = Topic.new
+     #@topic.name = params[:topic][:name]
+     #@topic.description = params[:topic][:description]
+     #@topic.public = params[:topic][:public]
+     #REFACTORED =>
+     @topic = Topic.new(topic_params) #see bottom of file
 
      if @topic.save
        redirect_to @topic, notice: "Topic was saved successfully."
@@ -36,9 +38,11 @@ class TopicsController < ApplicationController
    def update
      @topic = Topic.find(params[:id])
 
-     @topic.name = params[:topic][:name]
-     @topic.description = params[:topic][:description]
-     @topic.public = params[:topic][:public]
+     #@topic.name = params[:topic][:name]
+     #@topic.description = params[:topic][:description]
+     #@topic.public = params[:topic][:public]
+     #REFACTORED =>
+     @topic.assign_attributes(topic_params) #see bottom of file
 
      if @topic.save
         flash[:notice] = "Topic was updated."
@@ -60,6 +64,12 @@ class TopicsController < ApplicationController
        flash.now[:alert] = "There was an error deleting the topic."
        render :show
      end
+   end
+
+   private
+
+   def topic_params
+     params.require(:topic).permit(:name, :description, :public)
    end
 
 

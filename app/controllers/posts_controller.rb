@@ -3,6 +3,9 @@ class PostsController < ApplicationController
   before_action :require_sign_in, except: :show
   #before_action filter to redirect guest users from actions they won't be able to access (except for show)
 
+  before_action :authorize_user, except: [:show, :new, :create]
+  #before_action filter to check the role of a signed-in user. If the current_user isn't authorized based on their role, we'll redirect them to the posts show view.
+
   #def index
   #  @posts = Post.all  << no longer an index route for posts. All posts displayed with respect to a topic now, on the topics show view.
   #end
@@ -94,6 +97,15 @@ class PostsController < ApplicationController
    #add private methods to the bottom of the file. Any method defined below private, will be private.
    def post_params
      params.require(:post).permit(:title, :body)
+   end
+
+   def authorize_user
+     post = Post.find(params[:id])
+     #redirect the user unless they own the post they're attempting to modify, or they're an admin.
+     unless current_user == post.user || current_user.admin?
+       flash[:alert] = "You must be an admin to do that."
+       redirect_to [post.topic, post]
+     end
    end
 
 end

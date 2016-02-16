@@ -3,7 +3,9 @@ class User < ActiveRecord::Base
    has_many :posts
 
    before_save { self.email = email.downcase }
+   before_save { self.role ||= :member } #shorthand for self.role = :member if self.role.nil?
    #inline callback: trigger logic before/after an alteration of the object state
+   
    EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
    #The character pattern that we set EMAIL_REGEX to defines what constitutes a valid email address.
 
@@ -20,6 +22,8 @@ class User < ActiveRecord::Base
              format: { with: EMAIL_REGEX }
 
    has_secure_password
+
+   enum role: [:member, :admin]
 end
     #has_secure_password "adds methods to set and authenticate against a BCrypt password.
     #This mechanism requires you to have a password_digest attribute."

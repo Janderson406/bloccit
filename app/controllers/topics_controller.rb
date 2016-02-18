@@ -3,8 +3,12 @@ class TopicsController < ApplicationController
 
  before_action :require_sign_in, except: [:index, :show]
  #require_sign_in method from ApplicationController to redirect guest users who attempt to access controller actions other than index or show
- before_action :authorize_user, except: [:index, :show]
+ #before_action :authorize_user, except: [:index, :show]
  #check the role of signed-in users. If the current_user isn't an admin, we'll redirect them to the topics index view
+ before_action :authorize_create_destroy, only: [:create, :destroy]
+ before_action :authorize_update_edit, only: [:edit, :update]
+
+
 
   def index
        @topics = Topic.all
@@ -79,13 +83,19 @@ class TopicsController < ApplicationController
      params.require(:topic).permit(:name, :description, :public)
    end
 
-    #define authorize_user, used to redirect non-admin users to topics_path
-     def authorize_user
-       unless current_user.admin? || current_user.moderator?
-         flash[:alert] = "You must be an admin or mod to do that."
-         redirect_to topics_path
-       end
+   def authorize_create_destroy
+     unless current_user.admin?
+       flash[:alert] = "You must be an admin to do that."
+       # redirect_to topics_path
+       redirect_to topics_path
      end
+   end
 
+   def authorize_update_edit
+     unless current_user.admin? || current_user.moderator?
+       flash[:alert] = "You must be an admin or mod to do that."
+       redirect_to topics_path
+     end
+   end
 
 end

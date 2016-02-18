@@ -3,8 +3,12 @@ class PostsController < ApplicationController
   before_action :require_sign_in, except: :show
   #before_action filter to redirect guest users from actions they won't be able to access (except for show)
 
-  before_action :authorize_user, except: [:show, :new, :create]
+  #before_action :authorize_user, except: [:show, :new, :create]
   #before_action filter to check the role of a signed-in user. If the current_user isn't authorized based on their role, we'll redirect them to the posts show view.
+
+  before_action :authorize_update_edit, only: [:show, :create, :edit, :update]
+  before_action :authorize_destroy, only: [:destroy]
+
 
   #def index
   #  @posts = Post.all  << no longer an index route for posts. All posts displayed with respect to a topic now, on the topics show view.
@@ -99,13 +103,22 @@ class PostsController < ApplicationController
      params.require(:post).permit(:title, :body)
    end
 
-   def authorize_user
+   def authorize_update_edit
      post = Post.find(params[:id])
-     #redirect the user unless they own the post they're attempting to modify, or they're an admin.
-     unless current_user == post.user || current_user.admin? || current_user.moderator?
-       flash[:alert] = "You must be an admin or mod to do that."
-       redirect_to [post.topic, post]
-     end
-   end
+     unless current_user == post.user || ( current_user.admin? || current_user.moderator?)
+      flash[:alert] = "You must be an admin or mod to do that."
+      redirect_to [post.topic, post]
+    end
+  end
+
+  def authorize_destroy
+    post = Post.find(params[:id])
+    unless current_user == post.user || current_user.admin?
+      flash[:alert] = "You must be an admin to do that."
+      redirect_to [post.topic, post]
+    end
+  end
+
+
 
 end

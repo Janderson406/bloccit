@@ -5,16 +5,22 @@ Rails.application.routes.draw do
   #get 'posts/edit'
 #==> REFACTORED TO:
 #resource instructs Rails to create routes for creating, updating, viewing, and deleting instances
-resources :topics do
-   resources :posts, except: [:index]
- end
+  resources :topics do
+     resources :posts, except: [:index]
+   end
   #^^ we pass resources :posts to the resources :topics block. This nests the post routes under the topic routes.
   #posts index view is no longer needed. All posts will be displayed with respect to a topic now, on the topics show view
+  resources :posts, only: [] do
+   # " only: [] " because we don't want to create any /posts/:id routes, just posts/:post_id/comments
+    resources :comments, only: [:create, :destroy]
+    # We'll display comments on the posts show view, so we won't need index or new
+  end
 
-resources :users, only: [:new, :create]
-#'only' hash key will prevent Rails from creating unnecessary routes.
 
-resources :sessions, only: [:new, :create, :destroy]
+  resources :users, only: [:new, :create]
+  #'only' hash key will prevent Rails from creating unnecessary routes.
+
+  resources :sessions, only: [:new, :create, :destroy]
 
   #get 'welcome/index'
   #get 'welcome/about'

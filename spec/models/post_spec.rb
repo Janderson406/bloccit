@@ -9,6 +9,7 @@ RSpec.describe Post, type: :model do
   let(:post) { topic.posts.create!(title: RandomData.random_sentence, body: RandomData.random_paragraph, user: user) }
   #we create a new instance of the Post class, and associate user with post when we create the test post.
   #The let method makes the Post instance available throughout the rest of the spec, so we only need to instantiate it once.
+  it { is_expected.to have_many(:comments) }
   it { is_expected.to belong_to(:topic) }
   #we associate post with topic via topic.posts.create!, chained method call which creates a post for a given topic.
   it { is_expected.to belong_to(:user) }
@@ -30,6 +31,7 @@ RSpec.describe Post, type: :model do
        expect(post).to respond_to(:body)
      end
   end
+
 
 
 

@@ -1,11 +1,12 @@
 class User < ActiveRecord::Base
 
    has_many :posts
+   has_many :comments
 
    before_save { self.email = email.downcase }
    before_save { self.role ||= :member } #shorthand for self.role = :member if self.role.nil?
    #inline callback: trigger logic before/after an alteration of the object state
-   
+
    EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
    #The character pattern that we set EMAIL_REGEX to defines what constitutes a valid email address.
 

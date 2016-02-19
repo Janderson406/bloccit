@@ -1,0 +1,13 @@
+<div class="media">
+  <div class="media-body">
+    <h4 class="media-heading">
+      <%= link_to post.title, topic_post_path(@topic, post) %>
+      <!--topic_post_path takes a topic and a post and generates a path to the posts show view -->
+      <small>
+       submitted <%= time_ago_in_words(post.created_at) %> ago by <%= post.user.name %> <br>
+       <%= post.comments.count %> Comments
+       <!--submission and comment details for each post in the show view -->
+     </small>
+    </h4>
+  </div>
+</div>

@@ -40,8 +40,8 @@ class PostsController < ApplicationController
         @post.user = current_user #assign @post.user in the same way we assigned @post.topic, to properly scope the new post.
 
 
-
      if @post.save
+       @post.labels = Label.update_labels(params[:post][:labels])
        flash[:notice] = "Post was saved."
        redirect_to [@topic, @post] #change the redirect to use the nested post path
        #if we successfully save Post to the database, we display a success message
@@ -70,6 +70,7 @@ class PostsController < ApplicationController
 
 
      if @post.save
+       @post.labels = Label.update_labels(params[:post][:labels])
        flash[:notice] = "Post was updated."
        redirect_to [@post.topic, @post] #change the redirect to use the *nested* post path
      else

@@ -27,6 +27,11 @@
         <%= f.text_area :body, rows: 8, class: 'form-control', placeholder: "Enter post body" %>
     <% end %>
 
+    <!-- pass the label form partial the form as f, the current topic (@topic) as topic, and the labels associated with the current post (@post.labels), as labels -->
+   <div class="form-group">
+     <%= render partial: 'labels/form', locals: { f: f, topic: @topic, labels: @post.labels } %>
+   </div>
+
     <div class="form-group">
          <%= f.submit "Save", class: 'btn btn-success' %>
     </div>

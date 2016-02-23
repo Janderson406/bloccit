@@ -2,6 +2,8 @@ class Post < ActiveRecord::Base #handles interaction with database/allows us to 
   belongs_to :topic
   belongs_to :user
   has_many :comments, dependent: :destroy
+  has_many :labelings, as: :labelable
+  has_many :labels, through: :labelings
 
   default_scope { order('created_at DESC') }
   #The default_scope will order all posts by their created_at date, in descending order,

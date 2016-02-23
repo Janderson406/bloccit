@@ -4,35 +4,63 @@ class CommentsController < ApplicationController
    before_action :authorize_user, only: [:destroy] #unauthorized users are not permitted to delete comments
 
    def create
-     @post = Post.find(params[:post_id])
-     comment = @post.comments.new(comment_params)
-     comment.user = current_user
-     #find the correct post using post_id and then create a new comment using comment_params. We assign the comment's user to current_user, which returns the signed-in user instance.
+     if params[:post_id]
+         @post = Post.find(params[:post_id])
+         comment = @post.comments.new(comment_params)
+         comment.user = current_user
+         #find the correct post using post_id and then create a new comment using comment_params. We assign the comment's user to current_user, which returns the signed-in user instance.
 
-     if comment.save
-       flash[:notice] = "Comment saved successfully."
-       redirect_to [@post.topic, @post]
-       #redirect to the posts show view. Depending on whether the comment was valid, we'll either display a success or an error message to the user.
-     else
-       flash[:alert] = "Comment failed to save."
-       redirect_to [@post.topic, @post]
-     end
+         if comment.save
+           flash[:notice] = "Comment saved successfully."
+           redirect_to [@post.topic, @post]
+           #redirect to the posts show view. Depending on whether the comment was valid, we'll either display a success or an error message to the user.
+         else
+           flash[:alert] = "Comment failed to save."
+           redirect_to [@post.topic, @post]
+         end
+      elsif params[:topic_id]
+        @topic = Topic.find(params[:topic_id])
+        comment = @topic.comments.new(comment_params)
+        comment.user = current_user
+
+        if comment.save
+          flash[:notice] = "Comment saved successfully."
+          redirect_to [@topic]
+          #redirect to the posts show view. Depending on whether the comment was valid, we'll either display a success or an error message to the user.
+        else
+          flash[:alert] = "Comment failed to save."
+          redirect_to [@topic]
+        end
+      end
+
    end
 
 
    def destroy
-     @post = Post.find(params[:post_id])
-     comment = @post.comments.find(params[:id])
+     if params[:post_id]
+         @post = Post.find(params[:post_id])
+         comment = @post.comments.find(params[:id])
 
-     if comment.destroy
-       flash[:notice] = "Comment was deleted."
-       redirect_to [@post.topic, @post]
-     else
-       flash[:alert] = "Comment couldn't be deleted. Try again."
-       redirect_to [@post.topic, @post]
-     end
-   end
+         if comment.destroy
+           flash[:notice] = "Comment was deleted."
+           redirect_to [@post.topic, @post]
+         else
+           flash[:alert] = "Comment couldn't be deleted. Try again."
+           redirect_to [@post.topic, @post]
+         end
+     elsif params[:topic_id]
+        @topic = Topic.find(params[:topic_id])
+        comment = @topic.comments.find(params[:id])
 
+        if comment.destroy
+          flash[:notice] = "Comment was deleted."
+          redirect_to [@topic]
+        else
+          flash[:alert] = "Comment couldn't be deleted. Try again."
+          redirect_to [@topic]
+        end
+      end
+    end
 
    private
 

@@ -37,6 +37,7 @@ posts = Post.all
 #in order to pick a random post to associate each comment with
     user: users.sample,
     post: posts.sample,
+    topic: topics.sample,
     body: RandomData.random_paragraph
   )
 end

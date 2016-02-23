@@ -9,8 +9,9 @@ Rails.application.routes.draw do
 #==> REFACTORED TO:
 #resource instructs Rails to create routes for creating, updating, viewing, and deleting instances
   resources :topics do
+     resources :comments, only: [:create, :destroy]
      resources :posts, except: [:index]
-   end
+  end
   #^^ we pass resources :posts to the resources :topics block. This nests the post routes under the topic routes.
   #posts index view is no longer needed. All posts will be displayed with respect to a topic now, on the topics show view
   resources :posts, only: [] do

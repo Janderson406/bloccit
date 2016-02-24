@@ -8,7 +8,9 @@ class Post < ActiveRecord::Base #handles interaction with database/allows us to 
   has_many :labelings, as: :labelable
   has_many :labels, through: :labelings
 
-  default_scope { order('rank DESC') } 
+  after_create :create_vote
+
+  default_scope { order('rank DESC') }
 
   validates :title, length: { minimum: 5 }, presence: true
   validates :body, length: { minimum: 20 }, presence: true
@@ -37,10 +39,15 @@ class Post < ActiveRecord::Base #handles interaction with database/allows us to 
     new_rank = points + age_in_days
     update_attribute(:rank, new_rank)
   end
+
+  private
+  def create_vote
+    user.votes.create(post: self, value: 1)
+  end
 end
 #Comments are dependent on a post's existence because of the has_many :comments declaration in Post.
 #When we delete a post, we also need to delete all related comments.
 #perform a "cascade delete" => ensures that when a post is deleted, all of its comments are too.
 
 
-#test validation   n = Post.new :title => "A Very Long Title", :body => "this is the body. where these characters live", :topic => "validations"
+#test validation   n = Post.new :title => "A Very Long Title", :body => "this is the body. where these characters live", :topic => “validations"

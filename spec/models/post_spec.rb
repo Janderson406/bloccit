@@ -88,4 +88,12 @@ RSpec.describe Post, type: :model do
     end
 
   end
+
+  describe "#create_vote" do
+    it "changes up_votes value to 1 vote" do
+      post.save
+      expect(post.up_votes).to eq (1)
+    end
+  end
+
 end

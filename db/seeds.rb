@@ -20,13 +20,19 @@ topics = Topic.all
 
 # Create Posts
 50.times do
-  Post.create!(
+  post = Post.create!(
   #! instructs the method to raise error if there's a problem with data we're seeding.
     user:   users.sample,
     topic:  topics.sample,
     title:  RandomData.random_sentence,
     body:   RandomData.random_paragraph
   )
+
+  post.update_attribute(:created_at, rand(10.minutes .. 1.year).ago)
+  #update the time a post was created. This makes our seeded data more realistic and will allow us to see our ranking algorithm
+  rand(1..5).times { post.votes.create!(value: [-1, 1].sample, user: users.sample) }
+  #reate between one and five votes for each post. [-1, 1].sample randomly creates either an up vote or a down vote.
+
 end
 posts = Post.all
 

@@ -1,7 +1,8 @@
 class User < ActiveRecord::Base
 
-   has_many :posts
-   has_many :comments
+  has_many :posts, dependent: :destroy   #add dependent:destroy so that all dependent posts, comments, and votes are destroyed when their parent user is deleted
+  has_many :comments, dependent: :destroy
+  has_many :votes, dependent: :destroy
 
    before_save { self.email = email.downcase }
    before_save { self.role ||= :member } #shorthand for self.role = :member if self.role.nil?

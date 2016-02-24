@@ -17,6 +17,11 @@ Rails.application.routes.draw do
    # " only: [] " because we don't want to create any /posts/:id routes, just posts/:post_id/comments
     resources :comments, only: [:create, :destroy]
     # We'll display comments on the posts show view, so we won't need index or new
+
+    post '/up-vote' => 'votes#up_vote', as: :up_vote
+    post '/down-vote' => 'votes#down_vote', as: :down_vote
+    #These new lines create POST routes at the URL posts/:id/up-vote and posts/:id/down-vote.
+    #The as key-value pairs at the end stipulate the method names which will be associated with theese routes: up_vote_path and down_vote_path.
   end
 
 

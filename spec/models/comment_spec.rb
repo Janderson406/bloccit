@@ -7,7 +7,7 @@ RSpec.describe Comment, type: :model do
     #since comments belong to posts, we'll now be unable to create posts without a user
   let(:post) { topic.posts.create!(title: RandomData.random_sentence, body: RandomData.random_paragraph, user: user) }
   let(:comment) { Comment.create!(body: 'Comment Body', post: post, user: user) }
- 
+
      it { is_expected.to belong_to(:post) }
      it { is_expected.to belong_to(:user) }
      it { is_expected.to validate_presence_of(:body) }
@@ -19,4 +19,26 @@ RSpec.describe Comment, type: :model do
      end
    end
 
+   describe "after_create" do
+     #we initialize (but don't save) a new comment for post
+     before do
+       @another_comment = Comment.new(body: 'Comment Body', post: post, user: user)
+     end
+
+     #we favorite post then expect FavoriteMailer will receive a call to new_comment.
+     #We then save @another_comment to trigger the after create callback
+     it "sends an email to users who have favorited the post" do
+       favorite = user.favorites.create(post: post)
+       expect(FavoriteMailer).to receive(:new_comment).with(user, post, @another_comment).and_return(double(deliver_now: true))
+
+       @another_comment.save
+     end
+
+     #test that FavoriteMailer does not receive a call to new_comment when post isn't favorited
+     it "does not send emails to users who haven't favorited the post" do
+       expect(FavoriteMailer).not_to receive(:new_comment)
+
+       @another_comment.save
+     end
+   end
 end

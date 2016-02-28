@@ -4,6 +4,10 @@
 # or operating system, you probably want to add a global ignore instead:
 #   git config --global core.excludesfile '~/.gitignore_global'
 
+#Any file specified in .gitignore will not be pushed to GitHub when you git push. 
+#For that reason, if there are any files that contain sensitive data, or data that is only
+#relevant to your local environment, list them in .gitignore.
+
 # Ignore bundler config.
 /.bundle
 
@@ -15,3 +19,6 @@
 /log/*
 !/log/.keep
 /tmp
+
+# Ignore environment variables per Figaro gem
+/config/application.yml

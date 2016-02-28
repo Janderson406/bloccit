@@ -5,10 +5,11 @@ class Post < ActiveRecord::Base #handles interaction with database/allows us to 
   has_many :votes, dependent: :destroy
     # ^relates the models and allows us to call post.votes.
     #We also add dependent: :destroy to ensure that votes are destroyed when their parent post is deleted.
+  has_many :favorites, dependent: :destroy
   has_many :labelings, as: :labelable
   has_many :labels, through: :labelings
 
-  default_scope { order('rank DESC') } 
+  default_scope { order('rank DESC') }
 
   validates :title, length: { minimum: 5 }, presence: true
   validates :body, length: { minimum: 20 }, presence: true

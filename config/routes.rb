@@ -17,6 +17,7 @@ Rails.application.routes.draw do
    # " only: [] " because we don't want to create any /posts/:id routes, just posts/:post_id/comments
     resources :comments, only: [:create, :destroy]
     # We'll display comments on the posts show view, so we won't need index or new
+    resources :favorites, only: [:create, :destroy]
 
     post '/up-vote' => 'votes#up_vote', as: :up_vote
     post '/down-vote' => 'votes#down_vote', as: :down_vote

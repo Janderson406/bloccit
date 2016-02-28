@@ -3,6 +3,7 @@ class User < ActiveRecord::Base
   has_many :posts, dependent: :destroy   #add dependent:destroy so that all dependent posts, comments, and votes are destroyed when their parent user is deleted
   has_many :comments, dependent: :destroy
   has_many :votes, dependent: :destroy
+  has_many :favorites, dependent: :destroy
 
    before_save { self.email = email.downcase }
    before_save { self.role ||= :member } #shorthand for self.role = :member if self.role.nil?
@@ -26,6 +27,15 @@ class User < ActiveRecord::Base
    has_secure_password
 
    enum role: [:member, :admin]
+
+   def favorite_for(post)
+     favorites.where(post_id: post.id).first
+   end
+   #this takes a post object and uses where to retrieve the user's favorites with a post_id 
+   #that matches post.id. If the user has favorited post it will return an array of one item.
+   #If they haven't favorited post it will return an empty array. Calling first on the array
+   #will return either the favorite or nil depending on whether they favorited the post.
+
 end
     #has_secure_password "adds methods to set and authenticate against a BCrypt password.
     #This mechanism requires you to have a password_digest attribute."

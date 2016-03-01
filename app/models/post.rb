@@ -16,6 +16,8 @@ class Post < ActiveRecord::Base #handles interaction with database/allows us to 
   validates :topic, presence: true
   validates :user, presence: true
 
+  after_create :favorite_post
+
   ### votes in the below code is an implied self.votes
   def up_votes
     #find the up votes for a post by passing value: 1 to where. This fetches a collection of votes with a value of 1.
@@ -38,6 +40,15 @@ class Post < ActiveRecord::Base #handles interaction with database/allows us to 
     new_rank = points + age_in_days
     update_attribute(:rank, new_rank)
   end
+
+
+
+  def favorite_post
+    user.favorites.create(post: self)
+    FavoriteMailer.new_post(user, self).deliver_now
+  end
+
+
 end
 #Comments are dependent on a post's existence because of the has_many :comments declaration in Post.
 #When we delete a post, we also need to delete all related comments.

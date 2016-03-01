@@ -1,0 +1,4 @@
+You have favorited the post: "<%= @post.title %>"
+ <%= "=" * (@post.title.length + 12) %>
+
+Visit your post online at: <%= topic_post_url(@post.topic, @post) %>

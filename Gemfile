@@ -18,6 +18,7 @@ end
 group :development, :test do
    gem 'rspec-rails', '~> 3.0'
    gem 'shoulda'
+   gem 'factory_girl_rails', '~> 4.0'
  end
 #added rspec-rails to the :development and :test grps b/c we want its tasks and generators to be available in both environments.
 #specified a version (~> 3.0) to maintain predictable behavior despite new RSpec releases.

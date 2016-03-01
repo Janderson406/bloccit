@@ -10,6 +10,9 @@ class Post < ActiveRecord::Base #handles interaction with database/allows us to 
   has_many :labels, through: :labelings
 
   default_scope { order('rank DESC') }
+  scope :visible_to, -> (user) { user ? all : joins(:topic).where('topics.public' => true) }
+    #use a lambda (->) to ensure that a user is present or signed in. If the user is present, we return all posts.
+    #If not, we use the Active Record joins method to retrieve all posts which belong to a public topic.
 
   validates :title, length: { minimum: 5 }, presence: true
   validates :body, length: { minimum: 20 }, presence: true

@@ -2,10 +2,10 @@
 require 'rails_helper'
 
 RSpec.describe Comment, type: :model do
-  let(:topic) { Topic.create!(name: RandomData.random_sentence, description: RandomData.random_paragraph) }
-  let(:user) { User.create!(name: "Bloccit User", email: "user@bloccit.com", password: "helloworld") }
-    #since comments belong to posts, we'll now be unable to create posts without a user
-  let(:post) { topic.posts.create!(title: RandomData.random_sentence, body: RandomData.random_paragraph, user: user) }
+  let(:topic) { create(:topic) }
+  let(:user) { create(:user) }
+  let(:post) { create(:post) }
+  # ^ changed all of our model specs to use our new factories
   let(:comment) { Comment.create!(body: 'Comment Body', post: post, user: user) }
 
      it { is_expected.to belong_to(:post) }

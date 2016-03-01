@@ -1,7 +1,7 @@
 require 'rails_helper'
 
 RSpec.describe User, type: :model do
-  let(:user) { User.create!(name: "Bloccit User", email: "user@bloccit.com", password: "password") }
+  let(:user) { create(:user) }
   it { is_expected.to have_many(:posts) }
   it { is_expected.to have_many(:comments) }
   it { is_expected.to have_many(:votes) }
@@ -83,8 +83,8 @@ RSpec.describe User, type: :model do
 
 #test for values that we know should be invalid. this a *true negative*, as we are testing for a value that shouldn't exist.
   describe "invalid user" do
-    let(:user_with_invalid_name) { User.new(name: "", email: "user@bloccit.com") }
-    let(:user_with_invalid_email) { User.new(name: "Bloccit User", email: "") }
+    let(:user_with_invalid_name) { build(:user, name: "") }
+    let(:user_with_invalid_email) { build(:user, email: "") }
     let(:user_with_invalid_email_format) { User.new(name: "Bloccit User", email: "invalid_format") }
 
     it "should be an invalid user due to blank name" do
@@ -101,21 +101,34 @@ RSpec.describe User, type: :model do
   end
 
   describe "#favorite_for(post)" do
-  before do
-    topic = Topic.create!(name: RandomData.random_sentence, description: RandomData.random_paragraph)
-    @post = topic.posts.create!(title: RandomData.random_sentence, body: RandomData.random_paragraph, user: user)
+    before do
+      topic = Topic.create!(name: RandomData.random_sentence, description: RandomData.random_paragraph)
+      @post = topic.posts.create!(title: RandomData.random_sentence, body: RandomData.random_paragraph, user: user)
+    end
+
+    it "returns `nil` if the user has not favorited the post" do
+      expect(user.favorite_for(@post)).to be_nil
+    end
+
+    it "returns the appropriate favorite if it exists" do
+      #we create a favorite for user and @post
+      favorite = user.favorites.where(post: @post).create
+      #expect that favorite_for will return the favorite we created in the line above
+      expect(user.favorite_for(@post)).to eq(favorite)
+    end
   end
 
-  it "returns `nil` if the user has not favorited the post" do
-    expect(user.favorite_for(@post)).to be_nil
+#Implementing Gravatars
+  describe ".avatar_url" do
+    #use . in describe ".avatar_url" because it is a class method
+    let(:known_user) { create(:user, email: "blochead@bloc.io") }
+    #overriding the default email address with a known one so that we can test against a specific string that we know Gravatar will return for the account "blochead@bloc.io".
+    it "returns the proper Gravatar url for a known email entity" do
+      expected_gravatar = "http://gravatar.com/avatar/bb6d1172212c180cfbdb7039129d7b03.png?s=48"
+        # s=48 query paramter specifies that we want the returned image to be 48x48
+      expect(known_user.avatar_url(48)).to eq(expected_gravatar)
+        # we expect known_user.avatar_url to return http://gravatar.com/avatar/bb6d1172212c180cfbdb7039129d7b03.png?s=48
+    end
   end
-
-  it "returns the appropriate favorite if it exists" do
-    #we create a favorite for user and @post
-    favorite = user.favorites.where(post: @post).create
-    #expect that favorite_for will return the favorite we created in the line above
-    expect(user.favorite_for(@post)).to eq(favorite)
-  end
-end
 
 end

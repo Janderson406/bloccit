@@ -1,14 +1,11 @@
 require 'rails_helper'
 
 RSpec.describe Post, type: :model do
-  let(:topic) { Topic.create!(name: RandomData.random_sentence, description: RandomData.random_paragraph) }
-  #we create a parent topic for post.
-  let(:user) { User.create!(name: "Bloccit User", email: "user@bloccit.com", password: "helloworld") }
-   #we create a user to associate with a test post.
+  let(:topic) { create(:topic) }
+  let(:user) { create(:user) }
+  let(:post) { create(:post) }
+  # ^ changed all of our model specs to use our new factories
 
-  let(:post) { topic.posts.create!(title: RandomData.random_sentence, body: RandomData.random_paragraph, user: user) }
-  #we create a new instance of the Post class, and associate user with post when we create the test post.
-  #The let method makes the Post instance available throughout the rest of the spec, so we only need to instantiate it once.
   it { is_expected.to have_many(:labelings) }
    it { is_expected.to have_many(:labels).through(:labelings) }
 

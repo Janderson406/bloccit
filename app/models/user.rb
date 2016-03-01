@@ -31,7 +31,13 @@ class User < ActiveRecord::Base
    def favorite_for(post)
      favorites.where(post_id: post.id).first
    end
-   #this takes a post object and uses where to retrieve the user's favorites with a post_id 
+
+   def avatar_url(size)
+     gravatar_id = Digest::MD5::hexdigest(self.email).downcase
+     "http://gravatar.com/avatar/#{gravatar_id}.png?s=#{size}"
+   end
+      
+   #this takes a post object and uses where to retrieve the user's favorites with a post_id
    #that matches post.id. If the user has favorited post it will return an array of one item.
    #If they haven't favorited post it will return an empty array. Calling first on the array
    #will return either the favorite or nil depending on whether they favorited the post.

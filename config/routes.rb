@@ -26,7 +26,7 @@ Rails.application.routes.draw do
   end
 
 
-  resources :users, only: [:new, :create]
+  resources :users, only: [:new, :create, :show]
   #'only' hash key will prevent Rails from creating unnecessary routes.
 
   resources :sessions, only: [:new, :create, :destroy]

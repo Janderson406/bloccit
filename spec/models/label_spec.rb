@@ -5,8 +5,8 @@ require 'rails_helper'
    let(:user) { create(:user) }
    let(:post) { create(:post) }
    # ^ changed all of our model specs to use our new factories
-   let(:label) { Label.create!(name: 'Label') }
-   let(:label2) { Label.create!(name: 'Label2') }
+   let(:label) { create(:label, name: 'Label') }
+   let(:label2) { create(:label, name: 'Label2') }
 
  # label should have_many labelings (could be either a topic or a post) => our polymorphic relationships.
    it { is_expected.to have_many :labelings }

@@ -1,3 +1,4 @@
+
 <div class="row">
   <div class="col-md-8">
     <div class="media">
@@ -23,7 +24,24 @@
 
 <!--display all of the user's posts and comments using partials-->
 <h2>Posts</h2>
-<%= render @user.posts %>
+  <% if @user.user_posts? %>
+    <%= render @user.posts %>
+  <%else%>
+    <p><%= @user.name %> has not submitted any posts yet.</p>
+  <%end%>
 
 <h2>Comments</h2>
-<%= render @user.comments %>
+  <% if @user.user_comments? %>
+    <%= render @user.comments %>
+  <%else%>
+    <p><%= @user.name %> has not posted any comments yet.</p>
+  <%end%>
+
+<h2>Favorites</h2>
+  <% if @user.user_favorites? %>
+    <% @user.favorites.each do |favorite| %>
+      <%= render partial: 'users/favorite', locals: { post: favorite.post } %>
+    <% end %>
+  <%else%>
+    <p><%= @user.name %> has not assigned any favorites yet.</p>
+  <%end%>

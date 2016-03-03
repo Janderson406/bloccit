@@ -7,12 +7,17 @@ class TopicsController < ApplicationController
  #check the role of signed-in users. If the current_user isn't an admin, we'll redirect them to the topics index view
 
   def index
-       @topics = Topic.all
+       @topics = Topic.visible_to(current_user)
   end
 
 
   def show
      @topic = Topic.find(params[:id])
+
+     unless @topic.public || current_user
+       flash[:alert] = "You must be signed in to view private topics."
+       redirect_to new_session_path
+     end
   end
 
 

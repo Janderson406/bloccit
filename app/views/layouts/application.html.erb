@@ -29,23 +29,27 @@
          <% end %>
         </div>
      </ul>
-     <!--Because every view may have a *flash* message at some point, we'll add it someplace universal: application.html.erb-->
-     <% if flash[:notice] %>
-       <div class="alert alert-success">
-         <button type="button" class="close" data-dismiss="alert">&times;</button>
-         <%= flash[:notice] %>
-       </div>
-     <% elsif flash.now[:alert] %>
-       <div class="alert alert-danger">
-         <button type="button" class="close" data-dismiss="alert">&times;</button>
-         <%= flash.now[:alert] %>
-       </div>
-     <% elsif flash[:alert] %>
-       <div class="alert alert-warning">
-         <button type="button" class="close" data-dismiss="alert">&times;</button>
-         <%= flash[:alert] %>
-       </div>
-     <% end %>
+     <!--Because every view may have a *flash* message at some point, we'll add it someplace universal: application.html.erb
+         In order to prepend to the alert for Ajax/JS, we need to add a new flash div to application.html.erb. DOM manipulation often involves
+         updating the DOM with classes and identifies that JavaScript can then manipulate.-->
+     <div class="flash">
+       <% if flash[:notice] %>
+         <div class="alert alert-success">
+           <button type="button" class="close" data-dismiss="alert">&times;</button>
+           <%= flash[:notice] %>
+         </div>
+       <% elsif flash.now[:alert] %>
+         <div class="alert alert-danger">
+           <button type="button" class="close" data-dismiss="alert">&times;</button>
+           <%= flash.now[:alert] %>
+         </div>
+       <% elsif flash[:alert] %>
+         <div class="alert alert-warning">
+           <button type="button" class="close" data-dismiss="alert">&times;</button>
+           <%= flash[:alert] %>
+         </div>
+       <% end %>
+     </div>
 
 
 

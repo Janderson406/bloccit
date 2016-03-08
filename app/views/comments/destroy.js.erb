@@ -1,0 +1,10 @@
+<% if @comment.destroyed? %>
+  $('#comment-<%= @comment.id %>').hide();
+  $('.js-comments-count').html("<%= pluralize(@comment.user.comments.count, 'comment') %>");
+<% else %>
+// #6
+  $('.flash').prepend("<div class='alert alert-danger'><button type='button' class='close' data-dismiss='alert'>&times;</button><%= flash.now[:alert] %></div>");
+<% end %>
+
+// we use the same anchor id technique that we used in our emails. This is a useful
+//way to select a specific comment, because it dynamically generates the selector id using Ruby code.

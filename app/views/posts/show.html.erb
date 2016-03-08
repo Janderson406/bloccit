@@ -21,13 +21,19 @@
      <p><%= @post.body %></p>
      <div>
        <h3>Comments</h3>
-       <%= render @post.comments %>
+       <!--adding a div around the renders for the comments collection and the comments form further below
+           so we can use the jQuery prepend method-->
+       <div class='js-comments'>
+         <%= render @post.comments %>
+       </div>
      </div>
      <!-- allow signed in users to see the comment form. -->
      <% if current_user %>
      <!-- render the comment form, and use comments/form, because we are rendering the comment
      form from a post view. If we didn't specify comments, Rails would render the posts form partial by default -->
+     <div class='new-comment'>
        <%= render 'comments/form', comment: Comment.new, post: @post %>
+     </div>
      <% end %>
    </div>
    <div class="col-md-4">
@@ -50,6 +56,6 @@
      </h3>
      <% if current_user %>
        <%= render partial: 'favorites/favorite', locals: { post: @post } %>
-     <% end %>     
+     <% end %>
    </div>
  </div

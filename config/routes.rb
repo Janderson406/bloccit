@@ -43,4 +43,13 @@ Rails.application.routes.draw do
   #root method allows us to declare the default page the app loads when we navigate to the home page URL.
   #root is a method that takes a hash as an argument
 
+  namespace :api do
+    namespace :v1 do
+      resources :users, only: [:index, :show]
+      resources :topics, only: [:index, :show]      
+    end
+  end
+  # v1 is nested under api to create a URI of /api/v1/
+  # Under our nested namespace we see resourceful routing for users & topics, with only an index and show route.
+  # We now have two new URIs: /api/v1/users and /api/v1/users/id, which correspond to the index and show actions respectively
 end

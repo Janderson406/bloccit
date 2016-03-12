@@ -9,6 +9,9 @@ class User < ActiveRecord::Base
    before_save { self.role ||= :member } #shorthand for self.role = :member if self.role.nil?
    #inline callback: trigger logic before/after an alteration of the object state
 
+   before_create :generate_auth_token
+   #use the before_create hook to ensure that a token is generated for a user before it is created and saved to the database.
+
    EMAIL_REGEX = /\A[\w+\-.]+@[a-z\d\-.]+\.[a-z]+\z/i
    #The character pattern that we set EMAIL_REGEX to defines what constitutes a valid email address.
 
@@ -25,27 +28,37 @@ class User < ActiveRecord::Base
              format: { with: EMAIL_REGEX }
 
    has_secure_password
+     #has_secure_password "adds methods to set and authenticate against a BCrypt password.
+     #This mechanism requires you to have a password_digest attribute."
+     #This function abstracts away much of the complexity dealing with sophisticated encryption
+     #algorithms we would have to write to securely save passwords.
+     #has_secure_password requires a password_digest attribute on the model it is applied to.
+     #has_secure_password creates two virtual attributes, password and password_confirmation that we use to set and save the password.
 
    enum role: [:member, :admin]
 
    def favorite_for(post)
      favorites.where(post_id: post.id).first
    end
-
-   def avatar_url(size)
-     gravatar_id = Digest::MD5::hexdigest(self.email).downcase
-     "http://gravatar.com/avatar/#{gravatar_id}.png?s=#{size}"
-   end
-      
    #this takes a post object and uses where to retrieve the user's favorites with a post_id
    #that matches post.id. If the user has favorited post it will return an array of one item.
    #If they haven't favorited post it will return an empty array. Calling first on the array
    #will return either the favorite or nil depending on whether they favorited the post.
 
+   def avatar_url(size)
+     gravatar_id = Digest::MD5::hexdigest(self.email).downcase
+     "http://gravatar.com/avatar/#{gravatar_id}.png?s=#{size}"
+   end
+
+   def generate_auth_token
+     loop do
+       self.auth_token = SecureRandom.base64(64)
+       break unless User.find_by(auth_token: auth_token)
+     end
+   end
+    # generate_auth_token uses SecureRandom.base64(n) to generate a Base64 string. The argument n
+    #specifies the length, in bytes, of the random number to be generated.
+
+
+
 end
-    #has_secure_password "adds methods to set and authenticate against a BCrypt password.
-    #This mechanism requires you to have a password_digest attribute."
-    #This function abstracts away much of the complexity dealing with sophisticated encryption
-    #algorithms we would have to write to securely save passwords.
-    #has_secure_password requires a password_digest attribute on the model it is applied to.
-    #has_secure_password creates two virtual attributes, password and password_confirmation that we use to set and save the password.

@@ -17,4 +17,40 @@ class Api::V1::TopicsController < Api::V1::BaseController
     #The show action in this controller is similar to our non-API TopicsController in that it finds a topic based on the id.
     #Unlike our non-API TopicsController, this show action renders the user object it finds as JSON and returns an HTTP status code of 200 (success).
 
+    def update
+      topic = Topic.find(params[:id])
+
+      if topic.update_attributes(topic_params)
+        render json: topic.to_json, status: 200
+      else
+        render json: {error: "Topic update failed", status: 400}, status: 400
+      end
+    end
+
+    def create
+      topic = Topic.new(topic_params)
+
+      if topic.valid?
+        topic.save!
+        render json: topic.to_json, status: 201
+      else
+        render json: {error: "Topic is invalid", status: 400}, status: 400
+      end
+    end
+
+    def destroy
+      topic = Topic.find(params[:id])
+
+      if topic.destroy
+        render json: {message: "Topic destroyed", status: 200}, status: 200
+      else
+        render json: {error: "Topic destroy failed", status: 400}, status: 400
+      end      
+    end
+
+    private
+    def topic_params
+      params.require(:topic).permit(:name, :description, :public)
+    end
+
   end

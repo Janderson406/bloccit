@@ -15,6 +15,22 @@ require 'rails_helper'
        get :show, id: my_topic.id
        expect(response).to have_http_status(:success)
      end
+
+  #unauthenticated users cannot EDIT/CREATE/DELETE TOPICS
+     it "PUT update returns http unauthenticated" do
+       put :update, id: my_topic.id, topic: {name: "Topic Name", description: "Topic Description"}
+       expect(response).to have_http_status(401)
+     end
+
+     it "POST create returns http unauthenticated" do
+       post :create, topic: {name: "Topic Name", description: "Topic Description"}
+       expect(response).to have_http_status(401)
+     end
+
+     it "DELETE destroy returns http unauthenticated" do
+       delete :destroy, id: my_topic.id
+       expect(response).to have_http_status(401)
+     end
    end
 
    context "unauthorized user" do
@@ -32,5 +48,91 @@ require 'rails_helper'
        get :show, id: my_topic.id
        expect(response).to have_http_status(:success)
      end
+
+  #unAUTHorized users cannot EDIT/CREATE/DELETE TOPICS
+     it "PUT update returns http forbidden" do
+       put :update, id: my_topic.id, topic: {name: "Topic Name", description: "Topic Description"}
+       expect(response).to have_http_status(403)
+     end
+
+     it "POST create returns http forbidden" do
+       post :create, topic: {name: "Topic Name", description: "Topic Description"}
+       expect(response).to have_http_status(403)
+     end
+
+     it "DELETE destroy returns http forbidden" do
+       delete :destroy, id: my_topic.id
+       expect(response).to have_http_status(403)
+     end
    end
+
+
+   context "authenticated and authorized users" do
+     #we make my_user an admin and set the header to authenticate them. We then use FactoryGirl to build @new_topic
+     before do
+       my_user.admin!
+       controller.request.env['HTTP_AUTHORIZATION'] = ActionController::HttpAuthentication::Token.encode_credentials(my_user.auth_token)
+       @new_topic = build(:topic)
+     end
+
+  #API UPDATE TOPIC
+     describe "PUT update" do
+       before { put :update, id: my_topic.id, topic: {name: @new_topic.name, description: @new_topic.description} }
+
+       it "returns http success" do
+         expect(response).to have_http_status(:success)
+       end
+
+       it "returns json content type" do
+         expect(response.content_type).to eq 'application/json'
+       end
+
+       #we test that my_topic was properly updated
+       it "updates a topic with the correct attributes" do
+         updated_topic = Topic.find(my_topic.id)
+         expect(response.body).to eq(updated_topic.to_json)
+       end
+     end
+
+  #API CREATE TOPIC
+     describe "POST create" do
+       before { post :create, topic: {name: @new_topic.name, description: @new_topic.description} }
+
+       it "returns http success" do
+         expect(response).to have_http_status(:success)
+       end
+
+       it "returns json content type" do
+         expect(response.content_type).to eq 'application/json'
+       end
+
+       it "creates a topic with the correct attributes" do
+         hashed_json = JSON.parse(response.body)
+         expect(hashed_json["name"]).to eq(@new_topic.name)
+         expect(hashed_json["description"]).to eq(@new_topic.description)
+       end
+     end
+  #API DELETE TOPIC
+     describe "DELETE destroy" do
+       before { delete :destroy, id: my_topic.id }
+
+       it "returns http success" do
+         expect(response).to have_http_status(:success)
+       end
+
+       it "returns json content type" do
+         expect(response.content_type).to eq 'application/json'
+       end
+
+       it "returns the correct json success message" do
+         expect(response.body).to eq({"message" => "Topic destroyed","status" => 200}.to_json)
+       end
+
+       it "deletes my_topic" do
+         # we expect that searching for the deleted topic will raise an ActiveRecord::RecordNotFound exception.
+         expect{ Topic.find(my_topic.id) }.to raise_exception(ActiveRecord::RecordNotFound)
+       end
+     end
+   end
+
  end
